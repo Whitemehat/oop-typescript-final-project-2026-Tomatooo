@@ -1,7 +1,13 @@
+import { IsEnum , IsString } from 'class-validator';
+import { BookCategory } from '../enums/book-catagories.enums';
+
 export class CreateBookDto {
-    name: string;
-    author: string;
-    type: string;
-    language: string;
-    id: number;
+    @IsString()
+    name!: string;
+    @IsString()
+    author!: string;
+    @IsEnum(BookCategory)
+    category!: BookCategory;
+    @IsString()
+    language!: string;
 }
