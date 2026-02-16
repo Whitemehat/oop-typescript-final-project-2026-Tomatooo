@@ -1,9 +1,17 @@
 import { Injectable, NotFoundException , ForbiddenException} from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { Book } from './interfaces/book.interface';
+import { Book } from './interfaces_book/book.interface';
 import * as fs from 'fs';
 import * as path from 'path';
+
+
+/*
+------BookService------
+|  -filePath          |
+|
+|
+*/
 
 
 
@@ -35,7 +43,10 @@ export class BookService {
     return book;
   }
 
-  create(createBookDto: CreateBookDto): Book {
+  create(createBookDto: CreateBookDto , member: string): Book {
+    if(member !== 'admin'){
+      throw new ForbiddenException('Permission denied');
+    }
     const books = this.readFile();
     
     const newBook: Book = {
@@ -69,6 +80,25 @@ export class BookService {
     books[indexUpdate] = updateBook;
     this.writeFile(books);
     return updateBook;
+  }
+
+  replace(id: number, replaceDto : CreateBookDto, member:string ): Book {
+    if(member !== 'admin'){
+      throw new ForbiddenException('Permission denied');
+    }
+    const books = this.readFile();
+    const indexReplace = books.findIndex(book => book.id === id);
+    if(indexReplace === -1){
+      throw new NotFoundException('Not Found Book');
+    }
+
+    const replaceBook: Book = {
+      ...replaceDto,
+      id: books[indexReplace].id
+    }
+    books[indexReplace] = replaceBook;
+    this.writeFile(books);
+    return replaceBook;
   }
 
   remove(id: number): void {

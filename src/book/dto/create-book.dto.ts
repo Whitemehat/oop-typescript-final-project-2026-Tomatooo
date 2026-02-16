@@ -10,4 +10,6 @@ export class CreateBookDto {
     category!: BookCategory;
     @IsString()
     language!: string;
+    @IsString()
+    date!: string;
 }

@@ -6,4 +6,5 @@ export interface Book {
     author: string;
     category: BookCategory;
     language: string;
+    date: string;
 }
