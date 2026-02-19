@@ -51,7 +51,11 @@ export class BookController {
 
   @Delete(':id')
   @HttpCode(200)
-  remove(@Param('id') id: string) {
-    return this.bookService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Headers('role') role:string
+  ) 
+  {
+    return this.bookService.remove(+id , role);
   }
 }

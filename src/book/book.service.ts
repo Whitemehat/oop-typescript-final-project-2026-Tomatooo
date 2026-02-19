@@ -101,13 +101,18 @@ export class BookService {
     return replaceBook;
   }
 
-  remove(id: number): void {
-    const books = this.readFile();
-    const filtered = books.filter(book => book.id !== id );
-    if(filtered.length === books.length){
-      throw new NotFoundException('Book not found');
-    }
+  remove(id: number , member: string): void {
+    if(member === 'admin'){
+      const books = this.readFile();
+      const filtered = books.filter(book => book.id !== id );
+      if(filtered.length === books.length){
+        throw new NotFoundException('Book not found');
+      }
 
     this.writeFile(filtered);
+    }
+    else{
+      throw new ForbiddenException('Permission denied');
+    }
   }
 }
