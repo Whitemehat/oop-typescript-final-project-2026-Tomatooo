@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { Member } from './interfaces_member/member.interface';
+import { MemberRole } from './enums/member-role.enums';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -32,13 +33,11 @@ export class MemberService {
     return member;
   }
 
-  create(createMemberDto: CreateMemberDto, role: string): Member {
-    if (role !== 'admin') {
-      throw new ForbiddenException('Permission denied');
-    }
+  create(createMemberDto: CreateMemberDto): Member {
     const members = this.readFile();
     const newMember: Member = {
       ...createMemberDto,
+      role: MemberRole.STUDENT,
       id: members.length ? members[members.length - 1].id + 1 : 1,
     };
     members.push(newMember);

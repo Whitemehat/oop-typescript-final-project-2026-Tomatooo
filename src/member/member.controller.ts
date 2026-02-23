@@ -11,9 +11,8 @@ export class MemberController {
   @HttpCode(201)
   create(
     @Body() createMemberDto: CreateMemberDto,
-    @Headers('role') role: string,
   ) {
-    return this.memberService.create(createMemberDto, role);
+    return this.memberService.create(createMemberDto);
   }
 
   @Get()
