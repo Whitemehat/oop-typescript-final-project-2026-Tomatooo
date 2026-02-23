@@ -22,14 +22,20 @@ export class MemberService {
     fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
   }
 
-  findAll(): Member[] {
+  findAll(role: string): Member[] {
+    if (role !== 'admin') {
+      throw new ForbiddenException('Permission denied');
+    }
     return this.readFile();
   }
 
-  findOne(id: number): Member {
+  findOne(id: number, role: string, memberId: string): Member {
     const members = this.readFile();
     const member = members.find(member => member.id === id);
     if (!member) throw new NotFoundException('Member not found');
+    if (role !== 'admin' && +memberId !== id) {
+      throw new ForbiddenException('Permission denied');
+    }
     return member;
   }
 

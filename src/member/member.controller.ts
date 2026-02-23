@@ -17,14 +17,18 @@ export class MemberController {
 
   @Get()
   @HttpCode(200)
-  findAll() {
-    return this.memberService.findAll();
+  findAll(@Headers('role') role: string) {
+    return this.memberService.findAll(role);
   }
 
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string) {
-    return this.memberService.findOne(+id);
+  findOne(
+    @Param('id') id: string,
+    @Headers('role') role: string,
+    @Headers('memberId') memberId: string,
+  ) {
+    return this.memberService.findOne(+id, role, memberId);
   }
 
   @Patch(':id')
