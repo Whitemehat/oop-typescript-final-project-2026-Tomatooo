@@ -27,6 +27,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
             message: 'Internal server error',
             data: null
         };
-        response.satus(HttpStatus.INTERNAL_SERVER_ERROR).json(resBody)
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json(resBody)
     }
 }
