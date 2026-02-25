@@ -6,5 +6,9 @@ export interface Book {
     author: string;
     category: BookCategory;
     language: string;
-    date: string;
+    uploadDate: string;
+    isRent : boolean;
+    star: number;
+    review: string[];
+    isEarlyAccess: boolean;
 }
