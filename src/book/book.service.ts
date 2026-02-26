@@ -103,4 +103,14 @@ export class BookService {
     }
     this.writeFile(filtered);
   }
+
+  // อัปเดต isRent โดยตรงสำหรับ borrow/return sync (ไม่ต้องเช็ค role)
+  setRentStatus(id: number, isRent: boolean): Book {
+    const books = this.readFile();
+    const index = books.findIndex(book => book.id === id);
+    if (index === -1) throw new NotFoundException('Book not found');
+    books[index] = { ...books[index], isRent };
+    this.writeFile(books);
+    return books[index];
+  }
 }
