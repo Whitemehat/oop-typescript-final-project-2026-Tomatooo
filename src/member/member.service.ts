@@ -20,7 +20,7 @@ export class MemberService {
       return [];
     }
     const data = fs.readFileSync(this.filePath, 'utf-8');
-    return data ? JSON.parse(data) : [];
+    return data ? JSON.parse(data) : [];                                                                                                                                        
   }
 
   // เขียนข้อมูลทับลงไฟล์
