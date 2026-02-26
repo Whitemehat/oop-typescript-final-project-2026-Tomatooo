@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, Put, HttpCode } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { MemberService } from './member.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 
 // รับ request ที่ขึ้นต้นด้วย /member ทั้งหมด
+@ApiTags('Member')
 @Controller('member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
