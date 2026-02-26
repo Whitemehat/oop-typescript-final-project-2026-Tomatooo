@@ -12,5 +12,19 @@
     "borrowedBooks": [],
     "maxBorrowLimit": 5,
     "id": 1
+  },
+  {
+    "firstName": "Test",
+    "lastName": "User",
+    "email": "test@test.com",
+    "phone": "0811111111",
+    "address": "Bangkok",
+    "dateOfBirth": "1999-01-01",
+    "isActive": false,
+    "maxBorrowLimit": 2,
+    "role": "student",
+    "memberSince": "2026-02-26",
+    "borrowedBooks": [],
+    "id": 2
   }
 ]
