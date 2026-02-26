@@ -3,10 +3,12 @@ import { MemberService } from './member.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 
+// รับ request ที่ขึ้นต้นด้วย /member ทั้งหมด
 @Controller('member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
+  // สมัครสมาชิก ใครก็ทำได้ ไม่ต้องมี header พิเศษ
   @Post()
   @HttpCode(201)
   create(
@@ -15,12 +17,14 @@ export class MemberController {
     return this.memberService.create(createMemberDto);
   }
 
+  // ดูสมาชิกทั้งหมด ต้องเป็น admin
   @Get()
   @HttpCode(200)
   findAll(@Headers('role') role: string) {
     return this.memberService.findAll(role);
   }
 
+  // ดูสมาชิกตาม id ถ้าไม่ใช่ admin ต้องส่ง memberId ตรงกับ id ที่ขอ
   @Get(':id')
   @HttpCode(200)
   findOne(
@@ -31,6 +35,7 @@ export class MemberController {
     return this.memberService.findOne(+id, role, memberId);
   }
 
+  // แก้ข้อมูลบางส่วน ต้องเป็น admin
   @Patch(':id')
   @HttpCode(200)
   update(
@@ -41,6 +46,7 @@ export class MemberController {
     return this.memberService.update(+id, updateMemberDto, role);
   }
 
+  // แทนข้อมูลทั้งหมด ต้องเป็น admin
   @Put(':id')
   @HttpCode(200)
   replace(
@@ -51,6 +57,7 @@ export class MemberController {
     return this.memberService.replace(+id, createMemberDto, role);
   }
 
+  // ลบสมาชิก ต้องเป็น admin
   @Delete(':id')
   @HttpCode(200)
   remove(
