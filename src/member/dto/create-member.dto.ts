@@ -1,5 +1,4 @@
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
-import { MemberRole } from '../enums/member-role.enums';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class CreateMemberDto {
     @IsString()
@@ -14,24 +13,14 @@ export class CreateMemberDto {
     @IsString()
     phone!: string;
 
-    @IsEnum(MemberRole)
-    role!: MemberRole;
-
     @IsString()
     address!: string;
 
     @IsString()
     dateOfBirth!: string;
 
-    @IsString()
-    memberSince!: string;
-
     @IsBoolean()
     isActive!: boolean;
-
-    @IsArray()
-    @IsNumber({}, { each: true })
-    borrowedBooks!: number[];
 
     @IsNumber()
     maxBorrowLimit!: number;
