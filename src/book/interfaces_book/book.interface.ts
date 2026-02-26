@@ -7,11 +7,9 @@ export interface Book {
     author: string;
     category: BookCategory;
     language: string;
-    date: string;
-    isbn: string;
-    publisher: string;
-    totalPages: number;
-    availableCopies: number;
-    totalCopies: number;
-    description: string;
+    uploadDate: string;
+    isRent: boolean;
+    star: number;
+    review: string[];
+    isEarlyAccess: boolean;
 }
