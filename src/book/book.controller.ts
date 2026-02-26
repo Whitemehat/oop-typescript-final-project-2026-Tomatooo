@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, Put, HttpCode } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
 // รับ request ที่ขึ้นต้นด้วย /book ทั้งหมด
+@ApiTags('Book')
 @Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
