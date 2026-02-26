@@ -28,8 +28,9 @@ async function bootstrap(): Promise<void> {
   const config = new DocumentBuilder()
     .setTitle('NestJS Backend API')
     .setDescription('API Documentation for NestJS Backend Project')
-    .setVersion('1.0')
-    .addTag('api')
+    .setVersion('3.0')
+    .addTag('Book', 'Endpoints for managing books (CRUD)')
+    .addTag('Member', 'Endpoints for managing members (CRUD + borrow/return)')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
