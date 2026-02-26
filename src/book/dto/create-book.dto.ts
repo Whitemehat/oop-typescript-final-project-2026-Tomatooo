@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
 import { BookCategory } from '../enums/book-catagories.enums';
 
 export class CreateBookDto {
@@ -15,23 +15,18 @@ export class CreateBookDto {
     language!: string;
 
     @IsString()
-    date!: string;
+    uploadDate!: string;
 
-    @IsString()
-    isbn!: string;
-
-    @IsString()
-    publisher!: string;
+    @IsBoolean()
+    isRent!: boolean;
 
     @IsNumber()
-    totalPages!: number;
+    star!: number;
 
-    @IsNumber()
-    availableCopies!: number;
+    @IsArray()
+    @IsString({ each: true })
+    review!: string[];
 
-    @IsNumber()
-    totalCopies!: number;
-
-    @IsString()
-    description!: string;
+    @IsBoolean()
+    isEarlyAccess!: boolean;
 }
