@@ -66,4 +66,28 @@ export class MemberController {
   ) {
     return this.memberService.remove(+id, role);
   }
+
+  // ยืมหนังสือ admin ทำได้ทุกคน member ทำได้เฉพาะตัวเอง
+  @Post(':id/borrow/:bookId')
+  @HttpCode(200)
+  borrowBook(
+    @Param('id') id: string,
+    @Param('bookId') bookId: string,
+    @Headers('role') role: string,
+    @Headers('memberId') memberId: string,
+  ) {
+    return this.memberService.borrowBook(+id, +bookId, role, memberId);
+  }
+
+  // คืนหนังสือ admin ทำได้ทุกคน member ทำได้เฉพาะตัวเอง
+  @Post(':id/return/:bookId')
+  @HttpCode(200)
+  returnBook(
+    @Param('id') id: string,
+    @Param('bookId') bookId: string,
+    @Headers('role') role: string,
+    @Headers('memberId') memberId: string,
+  ) {
+    return this.memberService.returnBook(+id, +bookId, role, memberId);
+  }
 }
