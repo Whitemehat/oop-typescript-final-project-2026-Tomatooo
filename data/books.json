@@ -1,1 +1,53 @@
-[]
+[
+  {
+    "name": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "category": "fiction",
+    "language": "English",
+    "uploadDate": "2025-01-15",
+    "isRent": false,
+    "star": 5,
+    "review": [
+      "Amazing book",
+      "Must read"
+    ],
+    "isEarlyAccess": false,
+    "id": 1
+  },
+  {
+    "name": "Clean Code",
+    "author": "Robert C. Martin",
+    "category": "non-fiction",
+    "language": "English",
+    "uploadDate": "2024-03-01",
+    "isRent": false,
+    "star": 5,
+    "review": [],
+    "isEarlyAccess": false,
+    "id": 2
+  },
+  {
+    "name": "Design Patterns",
+    "author": "Gang of Four",
+    "category": "non-fiction",
+    "language": "English",
+    "uploadDate": "2024-04-01",
+    "isRent": false,
+    "star": 4,
+    "review": [],
+    "isEarlyAccess": false,
+    "id": 3
+  },
+  {
+    "name": "Design Patterns",
+    "author": "GoF",
+    "category": "non-fiction",
+    "language": "English",
+    "uploadDate": "2024-04-01",
+    "isRent": false,
+    "star": 4,
+    "review": [],
+    "isEarlyAccess": false,
+    "id": 4
+  }
+]
