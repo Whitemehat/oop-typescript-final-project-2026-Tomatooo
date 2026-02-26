@@ -7,9 +7,24 @@
   "license": "MIT",
   "contributors": [
     {
-      "fullname": "John Doe",
-      "username": "username1",
-      "studentId": "12345678"
+      "fullname": "A",
+      "username": "FIX",
+      "studentId": "001"
+    },
+    {
+      "fullname": "A",
+      "username": "FIX",
+      "studentId": "002"
+    },
+    {
+      "fullname": "A",
+      "username": "FIX",
+      "studentId": "003"
+    },
+    {
+      "fullname": "A",
+      "username": "FIX",
+      "studentId": "004"
     }
   ],
   "project": {
