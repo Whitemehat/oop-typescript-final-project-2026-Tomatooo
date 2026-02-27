@@ -13,5 +13,20 @@
     ],
     "isEarlyAccess": true,
     "id": 1
+  },
+  {
+    "name": "Fairy tail",
+    "author": "Michael Bay",
+    "category": "sci-fi",
+    "language": "Eng",
+    "uploadDate": "2026-02-12",
+    "isRent": false,
+    "star": 4,
+    "review": [
+      "good one",
+      "maybe good for fantasy"
+    ],
+    "isEarlyAccess": false,
+    "id": 2
   }
 ]

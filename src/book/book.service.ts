@@ -36,9 +36,9 @@ export class BookService {
     return this.readFile();
   }
 
-  findOne(id: number): Book {
+  findOne(name: string): Book {
     const books = this.readFile();
-    const book = books.find(book => book.id === id);
+    const book = books.find(book => (book.name).includes(name));
     if(!book) throw new NotFoundException('Book not found')
     return book;
   }

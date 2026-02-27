@@ -23,10 +23,10 @@ export class BookController {
     return this.bookService.findAll();
   }
 
-  @Get(':id')
+  @Get(':name')
   @HttpCode(200)
-  findOne(@Param('id') id: string) {
-    return this.bookService.findOne(+id);
+  findOne(@Param('name') name: string) {
+    return this.bookService.findOne(name);
   }
 
   @Patch(':id')
