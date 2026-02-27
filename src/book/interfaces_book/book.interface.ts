@@ -1,5 +1,6 @@
 import { BookCategory } from "../enums/book-catagories.enums";
 
+// โครงสร้างข้อมูลหนังสือ 1 เล่ม
 export interface Book {
     id: number;
     name: string;
@@ -7,7 +8,7 @@ export interface Book {
     category: BookCategory;
     language: string;
     uploadDate: string;
-    isRent : boolean;
+    isRent: boolean;
     star: number;
     review: string[];
     isEarlyAccess: boolean;
