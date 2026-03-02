@@ -24,23 +24,16 @@ export class BookService {
     fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
   }
 
-  // คืนหนังสือทั้งหมด
+  // ส่งหนังสือทั้งหมดไปให้ user
   findAll(): Book[] {
     return this.readFile();
   }
 
-<<<<<<< HEAD
-  findOne(name: string): Book {
-    const books = this.readFile();
-    const book = books.find(book => (book.name).includes(name));
-    if(!book) throw new NotFoundException('Book not found')
-=======
   // หาหนังสือจาก id ถ้าไม่เจอโยน 404
   findOne(id: number): Book {
     const books = this.readFile();
     const book = books.find(book => book.id === id);
     if (!book) throw new NotFoundException('Book not found');
->>>>>>> feat/member-module
     return book;
   }
 
