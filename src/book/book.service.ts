@@ -31,6 +31,9 @@ export class BookService {
 
   // หาหนังสือจาก id ถ้าไม่เจอโยน 404
   findOne(id: number): Book {
+    if(!id){
+      throw new NotFoundException('No input');
+    }
     const books = this.readFile();
     const book = books.find(book => book.id === id);
     if (!book) throw new NotFoundException('Book not found');
