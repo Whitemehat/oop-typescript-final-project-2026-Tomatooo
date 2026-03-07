@@ -41,7 +41,7 @@ describe('Library System Services', () => {
   // ==========================================
   describe('MemberService', () => {
     
-    describe('Borrowing & Returning Logic', () => {
+    describe('Happy Paths', () => {
       
       it('should successfully borrow a book', () => {
         const member = createMockMember({ id: 1 });
@@ -110,7 +110,7 @@ describe('Library System Services', () => {
   });
 
   // ==========================================
-  // MEMBER SERVICE TESTS
+  // BOOK SERVICE TESTS
   // ==========================================
 
   describe('BookService', () => {
