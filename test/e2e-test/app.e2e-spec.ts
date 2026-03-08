@@ -70,7 +70,7 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('PATCH /book/:id (Update)', () => {
+    it('PATCH /book/:id (Update: Name)', () => {
       return request(app.getHttpServer())
         .patch(`/book/${createdBookId}`)
         .set('role', 'admin')
@@ -81,7 +81,7 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('PUT /book/:id (Update)', () => {
+    it('PUT /book/:id (Update All)', () => {
       return request(app.getHttpServer())
         .put(`/book/${createdBookId}`)
         .set('role', 'admin')
@@ -163,6 +163,34 @@ describe('AppController (e2e)', () => {
         .expect((res) => {
           if (res.status === 404) console.warn('Member PATCH route missing in Controller');
           else expect(res.status).toBe(HttpStatus.OK);
+        });
+    });
+
+    it('PUT /member/:id (Update All)', () => {
+      return request(app.getHttpServer())
+        .put(`/member/${createdMemberId}`)
+        .set('role', 'admin')
+        .send({ 
+          firstName: 'PutName',
+          lastName: 'Putlast',
+          email: 'Put@test.com',
+          phone: '9876543210',
+          address: 'Put',
+          dateOfBirth: '2030-01-01',
+          isActive: false,
+          maxBorrowLimit: 4
+        })
+        .expect(HttpStatus.OK)
+        .expect((res) => {
+          expect(res.body.data.firstName).toBe('PutName');
+          expect(res.body.data.lastName).toBe('Putlast');
+          expect(res.body.data.email).toBe('Put@test.com');
+          expect(res.body.data.phone).toBe('9876543210');
+          expect(res.body.data.address).toBe('Put');
+          expect(res.body.data.dateOfBirth).toBe('2030-01-01');
+          expect(res.body.data.isActive).toBe(false);
+          expect(res.body.data.maxBorrowLimit).toBe(4);
+
         });
     });
 
