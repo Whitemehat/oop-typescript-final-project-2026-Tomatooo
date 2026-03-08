@@ -22,7 +22,7 @@ export const createMockMember = (overrides = {}) => ({
   dateOfBirth: '1995-01-01',
   isActive: true,
   maxBorrowLimit: 2,
-  role: 'student',
+  role: 'member',
   memberSince: '2026-01-01',
   borrowedBooks: [],
   ...overrides,

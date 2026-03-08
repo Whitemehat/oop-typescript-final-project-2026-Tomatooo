@@ -63,10 +63,11 @@ describe('AppController (e2e)', () => {
 
     it('GET /book/:id (Read One)', () => {
       return request(app.getHttpServer())
-        .get(`/book/${createdBookId}`)
+        .get('/book/search')
+        .query({ query: String(createdBookId) })
         .expect(HttpStatus.OK)
         .expect((res) => {
-          expect(res.body.data.id).toBe(createdBookId);
+          expect(res.body.data[0].id).toBe(createdBookId);
         });
     });
 
@@ -222,7 +223,7 @@ describe('AppController (e2e)', () => {
       // 3. Perform Borrowing
       const borrowRes = await request(app.getHttpServer())
         .post(`/member/${tempMemberId}/borrow/${tempBookId}`)
-        .set('role', 'student')
+        .set('role', 'member')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
         .expect(HttpStatus.CREATED); 
 
@@ -234,7 +235,7 @@ describe('AppController (e2e)', () => {
       // 1. Perform Returning
       const returnRes = await request(app.getHttpServer())
         .post(`/member/${tempMemberId}/return/${tempBookId}`)
-        .set('role', 'student')
+        .set('role', 'member')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
         .expect(HttpStatus.CREATED);
 
