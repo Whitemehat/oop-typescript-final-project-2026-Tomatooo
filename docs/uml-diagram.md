@@ -22,7 +22,7 @@ classDiagram
 
     class MemberRole {
         <<enumeration>>
-        STUDENT = student
+        MEMBER = member
         ADMIN = admin
         GUEST = guest
     }
@@ -73,11 +73,11 @@ classDiagram
     class BookController {
         -BookService bookService
         +findAll() Book[]
-        +findOne(id) Book
+        +search(query) object
         +create(dto, role) Book
-        +update(id, dto, role) Book
-        +replace(id, dto, role) Book
-        +remove(id, role) void
+        +update(query, dto, role) object
+        +replace(query, dto, role) object
+        +remove(query, role) object
     }
 
     class BookService {
@@ -86,10 +86,12 @@ classDiagram
         -writeFile(data) void
         +findAll() Book[]
         +findOne(id) Book
+        +findOneByQuery(query) Book
+        +search(query) object
         +create(dto, role) Book
-        +update(id, dto, role) Book
-        +replace(id, dto, role) Book
-        +remove(id, role) void
+        +update(query, dto, role) object
+        +replace(query, dto, role) object
+        +remove(query, role) object
         +setRentStatus(id, isRent) Book
     }
 
@@ -97,12 +99,17 @@ classDiagram
         -MemberService memberService
         +create(dto) Member
         +findAll(role) Member[]
-        +findOne(id, role, memberId) Member
-        +update(id, dto, role) Member
-        +replace(id, dto, role) Member
-        +remove(id, role) void
-        +borrowBook(id, bookId, role, memberId) Member
-        +returnBook(id, bookId, role, memberId) Member
+        +search(query, role) object
+        +update(query, dto, role) object
+        +replace(query, dto, role) object
+        +remove(query, role) object
+        +borrowBook(id, bookId, role) Member
+        +returnBook(id, bookId, role) Member
+    }
+
+    class MemberProfileController {
+        -MemberService memberService
+        +updateProfile(id, dto, role) object
     }
 
     class MemberService {
@@ -112,12 +119,14 @@ classDiagram
         -writeFile(data) void
         +create(dto) Member
         +findAll(role) Member[]
-        +findOne(id, role, memberId) Member
-        +update(id, dto, role) Member
-        +replace(id, dto, role) Member
-        +remove(id, role) void
-        +borrowBook(memberId, bookId, role, reqId) Member
-        +returnBook(memberId, bookId, role, reqId) Member
+        +findOneByQuery(query) Member
+        +search(query, role) object
+        +update(query, dto, role) object
+        +replace(query, dto, role) object
+        +remove(query, role) object
+        +updateProfile(memberId, dto) object
+        +borrowBook(memberId, bookId, role) Member
+        +returnBook(memberId, bookId, role) Member
     }
 
     class CreateBookDto {
@@ -145,6 +154,7 @@ classDiagram
 
     BookController --> BookService : injects
     MemberController --> MemberService : injects
+    MemberProfileController --> MemberService : injects
     MemberService --> BookService : injects
     BookController ..> CreateBookDto : uses
     MemberController ..> CreateMemberDto : uses
@@ -171,6 +181,7 @@ graph TD
     BookModule --> BookController["BookController"]
     BookModule --> BookService["BookService"]
     MemberModule --> MemberController["MemberController"]
+    MemberModule --> MemberProfileController["MemberProfileController"]
     MemberModule --> MemberService["MemberService"]
 
     MemberService -. "inject" .-> BookService
@@ -189,11 +200,11 @@ sequenceDiagram
     participant MS as MemberService
     participant BS as BookService
 
-    Client->>MC: POST /member/:id/borrow/:bookId\n[Headers: role, memberId]
+    Client->>MC: POST /member/:id/borrow/:bookId\n[Headers: role]
 
-    MC->>MS: borrowBook(memberId, bookId, role, requesterId)
+    MC->>MS: borrowBook(memberId, bookId, role)
 
-    MS->>MS: ตรวจสิทธิ์ (role หรือ memberId ตรงกัน)
+    MS->>MS: ตรวจสิทธิ์ (role ต้องเป็น member หรือ admin)
     MS->>MS: หา member จาก id
     alt member ไม่พบ
         MS-->>MC: throw NotFoundException
@@ -255,11 +266,11 @@ sequenceDiagram
     participant MS as MemberService
     participant BS as BookService
 
-    Client->>MC: POST /member/:id/return/:bookId\n[Headers: role, memberId]
+    Client->>MC: POST /member/:id/return/:bookId\n[Headers: role]
 
-    MC->>MS: returnBook(memberId, bookId, role, requesterId)
+    MC->>MS: returnBook(memberId, bookId, role)
 
-    MS->>MS: ตรวจสิทธิ์ (role หรือ memberId ตรงกัน)
+    MS->>MS: ตรวจสิทธิ์ (role ต้องเป็น member หรือ admin)
     MS->>MS: หา member จาก id
     alt member ไม่พบ
         MS-->>Client: 404 Member not found
