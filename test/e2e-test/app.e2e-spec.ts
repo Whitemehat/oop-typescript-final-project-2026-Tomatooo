@@ -63,14 +63,15 @@ describe('AppController (e2e)', () => {
 
     it('GET /book/:id (Read One)', () => {
       return request(app.getHttpServer())
-        .get(`/book/${createdBookId}`)
+        .get('/book/search')
+        .query({ query: String(createdBookId) })
         .expect(HttpStatus.OK)
         .expect((res) => {
-          expect(res.body.data.id).toBe(createdBookId);
+          expect(res.body.data[0].id).toBe(createdBookId);
         });
     });
 
-    it('PATCH /book/:id (Update)', () => {
+    it('PATCH /book/:id (Update: Name)', () => {
       return request(app.getHttpServer())
         .patch(`/book/${createdBookId}`)
         .set('role', 'admin')
@@ -81,7 +82,7 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('PUT /book/:id (Update)', () => {
+    it('PUT /book/:id (Update All)', () => {
       return request(app.getHttpServer())
         .put(`/book/${createdBookId}`)
         .set('role', 'admin')
@@ -166,6 +167,34 @@ describe('AppController (e2e)', () => {
         });
     });
 
+    it('PUT /member/:id (Update All)', () => {
+      return request(app.getHttpServer())
+        .put(`/member/${createdMemberId}`)
+        .set('role', 'admin')
+        .send({ 
+          firstName: 'PutName',
+          lastName: 'Putlast',
+          email: 'Put@test.com',
+          phone: '9876543210',
+          address: 'Put',
+          dateOfBirth: '2030-01-01',
+          isActive: false,
+          maxBorrowLimit: 4
+        })
+        .expect(HttpStatus.OK)
+        .expect((res) => {
+          expect(res.body.data.firstName).toBe('PutName');
+          expect(res.body.data.lastName).toBe('Putlast');
+          expect(res.body.data.email).toBe('Put@test.com');
+          expect(res.body.data.phone).toBe('9876543210');
+          expect(res.body.data.address).toBe('Put');
+          expect(res.body.data.dateOfBirth).toBe('2030-01-01');
+          expect(res.body.data.isActive).toBe(false);
+          expect(res.body.data.maxBorrowLimit).toBe(4);
+
+        });
+    });
+
     it('DELETE /member/:id (Admin Delete Member)', () => {
       return request(app.getHttpServer())
         .delete(`/member/${createdMemberId}`)
@@ -222,9 +251,9 @@ describe('AppController (e2e)', () => {
       // 3. Perform Borrowing
       const borrowRes = await request(app.getHttpServer())
         .post(`/member/${tempMemberId}/borrow/${tempBookId}`)
-        .set('role', 'student')
+        .set('role', 'member')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
-        .expect(HttpStatus.OK); 
+        .expect(HttpStatus.CREATED); 
 
       // 4. Verify borrowedBooks contains the ID
       expect(borrowRes.body.data.borrowedBooks).toContain(tempBookId);
@@ -234,9 +263,9 @@ describe('AppController (e2e)', () => {
       // 1. Perform Returning
       const returnRes = await request(app.getHttpServer())
         .post(`/member/${tempMemberId}/return/${tempBookId}`)
-        .set('role', 'student')
+        .set('role', 'member')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
-        .expect(HttpStatus.OK);
+        .expect(HttpStatus.CREATED);
 
       // 2. Verify borrowedBooks is now empty
       expect(returnRes.body.data.borrowedBooks).not.toContain(tempBookId);

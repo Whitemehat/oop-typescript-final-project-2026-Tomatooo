@@ -3,8 +3,7 @@
 > Base URL: http://localhost:3000
 
 **Authorization:** ระบบใช้ HTTP Headers แทน JWT
-- `role` — ระบุสิทธิ์ (`admin` / `student` / `guest`)
-- `memberId` — ระบุตัวตน member (ใช้เฉพาะ endpoint บางตัว)
+- `role` — ระบุสิทธิ์ (`admin` / `member` / `guest`)
 
 **Response Format:** ทุก endpoint ใช้รูปแบบนี้เสมอ
 
@@ -29,11 +28,10 @@
 
 ## 📚 Book Module — `/book`
 
-### 🔴 GET /book
-ดึงข้อมูลหนังสือทั้งหมด
+### GET /book
+ดึงข้อมูลหนังสือทั้งหมด ใครก็ดูได้ ไม่ต้องมี header
 
-**Response :**
-* **200 (OK) :**  ดึงข้อมูลรายการหนังสือทั้งหมดสำเร็จ
+**Response 200**
 ```json
 {
   "success": true,
@@ -57,44 +55,37 @@
 
 ---
 
-### 🔴 GET /book/:id
-ดึงหนังสือตาม ID ที่ระบุ
+### GET /book/search
+ค้นหาหนังสือด้วย **ชื่อ** (partial match, case-insensitive) หรือ **ID** (ตัวเลข) ใครก็ค้นได้
 
-**Path Parameter:** `id` — รหัสหนังสือ (number)
+**Query Parameter:** `query` — ชื่อหนังสือ หรือ id
 
-**Response :**
-* **200 (OK) :** ดึงข้อมูลหนังสือสำเร็จ
+**Response 200** — พร้อม message บอกผลการค้นหา
 ```json
 {
   "success": true,
-  "message": "Request successful",
-  "data": {
-    "id": 1,
-    "name": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "category": "fiction",
-    "language": "English",
-    "uploadDate": "2024-01-15",
-    "isRent": false,
-    "star": 4,
-    "review": ["เล่มนี้ดีมาก"],
-    "isEarlyAccess": false
-  }
+  "message": "Found 2 book(s): [ID 1] The Great Gatsby by F. Scott Fitzgerald, [ID 2] Dune by Frank Herbert",
+  "data": [ { "id": 1, ... }, { "id": 2, ... } ]
 }
 ```
 
-* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID
+หรือถ้าไม่เจอ:
+
 ```json
-{ "success": false, "message": "Book not found", "data": null }
+{
+  "success": true,
+  "message": "No data found",
+  "data": []
+}
 ```
 
 ---
 
-### 🔴 POST /book
+### POST /book
 เพิ่มหนังสือใหม่เข้าสู่ระบบ
 
-**Access control :** `Admin`
-**Headers :** `role: admin`
+**Access control:** `Admin`
+**Headers:** `role: admin`
 
 **Request Body:**
 ```json
@@ -123,10 +114,9 @@
 | review | string[] | ✅ | รายการ review |
 | isEarlyAccess | boolean | ✅ | หนังสือ early access หรือไม่ |
 
-> **Category Support (BookCategory) :** `Fiction`,` Non-fiction`, `Horror`,` Sci-fi`, `History, Fantasy`,` Adventure, Comedy`
+> **Category ที่รองรับ (BookCategory):** `fiction`, `non-fiction`, `horror`, `sci-fi`, `history`, `fantasy`, `adventure`, `comedy`
 
-**Response :**
-* **201 (created) :** เพิ่มหนังสือเข้าสู่ระบบสำเร็จ
+**Response 201**
 ```json
 {
   "success": true,
@@ -135,31 +125,25 @@
 }
 ```
 
-* **400 (Bad Request)**  
-> **Cause:** ข้อมูลไม่ครบถ้วน (Missing required fields) หรือประเภทข้อมูลไม่ถูกต้อง (Invalid data types)
-```json
-{ "success": false, "message": "...", "data": null }
-```
+**Response 400** — ข้อมูลไม่ครบถ้วน หรือประเภทข้อมูลไม่ถูกต้อง
 
-* **403 (Forbidden)**
-> **Cause :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
+
+**Response 403** — ไม่ใช่ admin
 ```json
-{ "success": false, "message": "Permission denied", "data": null }
+{ "success": false, "message": "Access denied: Admin role required", "data": null }
 ```
 
 ---
 
-### 🔴 PATCH /book/:id
+### PATCH /book/:query
 แก้ข้อมูลหนังสือบางส่วน
 
-**Access control :** `Admin`
-**Headers :** `role: admin`
+**Access control:** `Admin`
+**Headers:** `role: admin`
 
-**Path Parameter:** `id` — รหัสหนังสือ
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อหนังสือ (exact match) เช่น `"3"` หรือ `"Dune"`
 
-**Request Body:** 
-> Optional: สามารถส่งเฉพาะ Field ที่ต้องการอัปเดตได้
-
+**Request Body:** ส่งเฉพาะ field ที่ต้องการแก้ได้
 ```json
 {
   "star": 5,
@@ -167,78 +151,80 @@
 }
 ```
 
-**Response :**
-
-* **200 (OK) :** อัปเดตข้อมูลสำเร็จ และคืนข้อมูลหนังสือที่แก้ไขแล้ว
-* **400 (Bad Request) :** ข้อมูลที่ส่งมาไม่ถูกต้อง
-* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
-* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID (Book not found)
-
----
-
-### 🔴 PUT /book/:id
-แก้ไขและแทนที่ข้อมูลหนังสือแบบยกชุด (Full Update) โดยอ้างอิงจาก ID ที่ระบุ
-
-
-**Access control :** `Admin`
-**Headers :** `role: admin`
-
-
-**Path Parameter:**  `id` — รหัสหนังสือ
-
-**Request Body:** เหมือน POST /book 
-
+**Response 200** — คืนข้อมูลหนังสือที่แก้ไขแล้ว พร้อม message
 ```json
 {
-
-"name": "string",
-
-"author": "string",
-
-"category": "BookCategory",
-
-"language": "string",
-
-"uploadDate": "YYYY-MM-DD",
-
-"isRent": false,
-
-"star": 0,
-
-"review": ["string"],
-
-"isEarlyAccess": false
-
+  "success": true,
+  "message": "Updated Book ID 3 Successfully",
+  "data": { "id": 3, ... }
 }
 ```
->ฟิลด์ `category` ให้ระบุค่าตาม enum **BookCategory** เท่านั้น (ได้แก่: `Fiction`, `Non-fiction`, `Horror`, `Sci-fi`, `History`, `Fantasy`, `Adventure`, `Comedy`)
 
-**Response :**
+**Response 400** — ข้อมูลไม่ถูกต้อง หรือ `:query` ตรงกับหนังสือมากกว่า 1 เล่ม (ambiguous)
 
-* **200 (OK) :** อัปเดตข้อมูลสำเร็จ และคืนข้อมูลหนังสือที่แก้ไขแล้ว
-* **400 (Bad Request) :** ข้อมูลที่ส่งมาไม่ถูกต้อง หรือ Field ไม่ครบตามที่กำหนด
-* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
-* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID 
+**Response 403** — ไม่ใช่ admin
+
+**Response 404** — ไม่พบหนังสือที่ระบุ
 
 ---
 
-### 🔴 DELETE /book/:id
-ลบข้อมูลหนังสือออกจากระบบอย่างถาวร โดยระบุผ่าน ID ที่ต้องการลบ
+### PUT /book/:query
+แก้ไขและแทนที่ข้อมูลหนังสือแบบยกชุด (Full Update)
 
-**Access control :** `Admin`
-**Headers :** `role: admin`
+**Access control:** `Admin`
+**Headers:** `role: admin`
 
-**Path Parameter:**  `id` — รหัสหนังสือ
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อหนังสือ (exact match)
 
-
-**Response :**
-* **200 (OK) :** ลบข้อมูลสำเร็จ
+**Request Body:** เหมือน POST /book (ทุก field required)
 ```json
-{ "success": true, "message": "Request successful", "data": null }
+{
+  "name": "string",
+  "author": "string",
+  "category": "BookCategory",
+  "language": "string",
+  "uploadDate": "YYYY-MM-DD",
+  "isRent": false,
+  "star": 0,
+  "review": ["string"],
+  "isEarlyAccess": false
+}
 ```
 
-* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
-* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID 
+**Response 200** — คืนข้อมูลหนังสือที่แทนที่แล้ว พร้อม message
+```json
+{
+  "success": true,
+  "message": "Replaced Book ID 3 Successfully",
+  "data": { "id": 3, ... }
+}
+```
+
+**Response 400** | **403** | **404**
+
+---
+
+### DELETE /book/:query
+ลบข้อมูลหนังสือออกจากระบบอย่างถาวร
+
+> **หมายเหตุ:** หลังจากลบแล้ว ระบบจะ **resequence id** ของหนังสือที่เหลืออยู่ให้ต่อเนื่องใหม่ (1, 2, 3, ...)
+> และอัปเดต `borrowedBooks` ของ member ทุกคนให้สอดคล้องกับ id ใหม่โดยอัตโนมัติ
+
+**Access control:** `Admin`
+**Headers:** `role: admin`
+
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อหนังสือ (exact match)
+
+**Response 200**
+```json
+{
+  "success": true,
+  "message": "Deleted Book ID 3 Successfully",
+  "data": null
+}
+```
+
+**Response 403** | **404**
 
 ---
 
@@ -247,8 +233,9 @@
 ### POST /member
 สมัครสมาชิกใหม่ ใครก็ทำได้ ไม่ต้องมี header
 
-> **หมายเหตุ:** `role` จะถูก force เป็น `student` เสมอ, `memberSince` ถูก auto-set เป็นวันนี้,
-> `borrowedBooks` เริ่มต้นเป็น `[]` ทั้งหมดนี้ไม่ต้องส่งใน body
+> **หมายเหตุ:**
+> - `role` จะถูก force เป็น `member` เสมอ, `memberSince` ถูก auto-set เป็นวันนี้, `borrowedBooks` เริ่มต้นเป็น `[]` — ทั้งหมดนี้ไม่ต้องส่งใน body
+> - **email ต้องไม่ซ้ำ** กับ member คนอื่นที่มีอยู่แล้ว
 
 **Request Body:**
 ```json
@@ -283,7 +270,7 @@
   "data": {
     "id": 1,
     "firstName": "สมชาย",
-    "role": "student",
+    "role": "member",
     "memberSince": "2026-02-26",
     "borrowedBooks": [],
     ...
@@ -293,50 +280,59 @@
 
 **Response 400** — Validation error
 
+**Response 409 (Conflict)** — Email นี้ถูกใช้ไปแล้ว
+```json
+{ "success": false, "message": "Email is already in use", "data": null }
+```
+
 ---
 
 ### GET /member
 ดูสมาชิกทั้งหมด เฉพาะ admin
 
-**Headers:**
-```
-role: admin
-```
+**Headers:** `role: admin`
 
 **Response 200** — คืน array ของสมาชิกทั้งหมด
+
 **Response 403** — ไม่ใช่ admin
 
 ---
 
-### GET /member/:id
-ดูสมาชิกตาม ID
+### GET /member/search
+ค้นหา member ด้วย **ชื่อ** (firstName/lastName, partial match) หรือ **ID** (ตัวเลข) เฉพาะ admin
 
-- `admin` — ดูสมาชิกคนไหนก็ได้
-- ไม่ใช่ admin — ต้องส่ง `memberId` header ตรงกับ `:id` ที่ขอ
+**Headers:** `role: admin`
 
-**Headers:**
-```
-role: admin
-```
-หรือ
-```
-role: student
-memberId: 5
+**Query Parameter:** `query` — ชื่อ หรือ id
+
+**Response 200** — พร้อม message บอกผลการค้นหา
+```json
+{
+  "success": true,
+  "message": "Found 1 member(s): [ID 2] John Doe (john@example.com)",
+  "data": [ { "id": 2, ... } ]
+}
 ```
 
-**Response 200** — คืนข้อมูล member
-**Response 403** — ไม่มีสิทธิ์ (ไม่ใช่ admin และ memberId ไม่ตรง)
-**Response 404** — ไม่พบสมาชิก
+หรือถ้าไม่เจอ:
+```json
+{
+  "success": true,
+  "message": "No data found",
+  "data": []
+}
+```
+
+**Response 403** — ไม่ใช่ admin
 
 ---
 
-### PATCH /member/:id
+### PATCH /member/:query
 แก้ข้อมูลสมาชิกบางส่วน เฉพาะ admin
 
-**Headers:**
-```
-role: admin
-```
+**Headers:** `role: admin`
+
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อสมาชิก (exact match) เช่น `"2"` หรือ `"John Doe"`
 
 **Request Body:** field ใดก็ได้จาก CreateMemberDto (optional ทั้งหมด)
 ```json
@@ -346,38 +342,60 @@ role: admin
 }
 ```
 
-**Response 200** | **400** | **403** | **404**
+**Response 200** — พร้อม message
+```json
+{
+  "success": true,
+  "message": "Updated Member ID 2 Successfully",
+  "data": { "id": 2, ... }
+}
+```
+
+**Response 400** | **403** | **404**
 
 ---
 
-### PUT /member/:id
+### PUT /member/:query
 แทนข้อมูลสมาชิกทั้งหมด เฉพาะ admin
 
 > **หมายเหตุ:** `role`, `memberSince`, `borrowedBooks` จะถูก **preserve** ไว้เสมอ (system-managed fields)
 > แม้ไม่ได้ส่งมาใน body ค่าเหล่านี้จะไม่หาย
 
-**Headers:**
-```
-role: admin
-```
+**Headers:** `role: admin`
+
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อสมาชิก (exact match)
 
 **Request Body:** เหมือน POST /member (ทุก field required)
 
-**Response 200** | **400** | **403** | **404**
+**Response 200** — พร้อม message
+```json
+{
+  "success": true,
+  "message": "Replaced Member ID 2 Successfully",
+  "data": { "id": 2, ... }
+}
+```
+
+**Response 400** | **403** | **404**
 
 ---
 
-### DELETE /member/:id
+### DELETE /member/:query
 ลบสมาชิกออกจากระบบ เฉพาะ admin
 
-**Headers:**
-```
-role: admin
-```
+> **หมายเหตุ:** หลังจากลบแล้ว ระบบจะ **resequence id** ของสมาชิกที่เหลือให้ต่อเนื่องใหม่ (1, 2, 3, ...)
+
+**Headers:** `role: admin`
+
+**Path Parameter:** `:query` — ID (ตัวเลข) หรือชื่อสมาชิก (exact match)
 
 **Response 200**
 ```json
-{ "success": true, "message": "Request successfull", "data": null }
+{
+  "success": true,
+  "message": "Deleted Member ID 2 Successfully",
+  "data": null
+}
 ```
 
 **Response 403** | **404**
@@ -388,17 +406,10 @@ role: admin
 ยืมหนังสือ — sync `book.isRent = true` และเพิ่ม bookId ใน `member.borrowedBooks`
 
 - `admin` — ยืมหนังสือให้สมาชิกคนไหนก็ได้
-- ไม่ใช่ admin — ต้องส่ง `memberId` header ตรงกับ `:id`
+- `member` — ยืมได้ (ระบุ `:id` ของสมาชิกที่ต้องการยืม)
+- `guest` — **ไม่มีสิทธิ์ยืมหนังสือ**
 
-**Headers:**
-```
-role: admin
-```
-หรือ
-```
-role: student
-memberId: 5
-```
+**Headers:** `role: admin` หรือ `role: member`
 
 **Path Parameters:**
 - `:id` — รหัส member ที่ยืม
@@ -419,7 +430,8 @@ memberId: 5
 { "success": false, "message": "Book is already rented", "data": null }
 ```
 
-**Response 403** — ไม่มีสิทธิ์ / member ไม่ active / เกิน borrow limit
+**Response 403** — ไม่มีสิทธิ์ (guest) / member ไม่ active / เกิน borrow limit
+
 **Response 404** — ไม่พบ member / ไม่พบหนังสือ
 
 ---
@@ -428,17 +440,10 @@ memberId: 5
 คืนหนังสือ — sync `book.isRent = false` และลบ bookId ออกจาก `member.borrowedBooks`
 
 - `admin` — คืนหนังสือแทนสมาชิกคนไหนก็ได้
-- ไม่ใช่ admin — ต้องส่ง `memberId` header ตรงกับ `:id`
+- `member` — คืนได้ (ระบุ `:id` ของสมาชิกที่ต้องการคืน)
+- `guest` — **ไม่มีสิทธิ์คืนหนังสือ**
 
-**Headers:**
-```
-role: admin
-```
-หรือ
-```
-role: student
-memberId: 5
-```
+**Headers:** `role: admin` หรือ `role: member`
 
 **Path Parameters:**
 - `:id` — รหัส member ที่คืน
@@ -460,6 +465,46 @@ memberId: 5
 
 ---
 
+## 👤 Member Profile Module — `/member`
+
+### PATCH /member/:id/profile
+แก้ไขข้อมูลส่วนตัวสมาชิก เฉพาะ member หรือ admin
+
+**Headers:** `role: member` หรือ `role: admin`
+
+**Path Parameter:** `:id` — ID ของสมาชิกที่ต้องการแก้ไข
+
+**Request Body (optional fields):**
+```json
+{
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "phone": "string",
+  "address": "string",
+  "dateOfBirth": "YYYY-MM-DD"
+}
+```
+
+> **หมายเหตุ:** ไม่สามารถแก้ไข `role`, `isActive`, `maxBorrowLimit`, `borrowedBooks` ผ่าน endpoint นี้ได้
+
+**Response 200**
+```json
+{
+  "success": true,
+  "message": "Updated Member ID 1 Successfully",
+  "data": { "id": 1, "firstName": "...", ... }
+}
+```
+
+**Response 403** — guest ไม่มีสิทธิ์
+
+**Response 404** — ไม่พบสมาชิก
+
+**Response 409** — email ใหม่ซ้ำกับ member คนอื่น
+
+---
+
 ## HTTP Status Codes สรุป
 
 | Code | ความหมาย | ตัวอย่าง |
@@ -467,6 +512,7 @@ memberId: 5
 | 200 | สำเร็จ | GET, PUT, PATCH, DELETE, borrow, return |
 | 201 | สร้างสำเร็จ | POST /book, POST /member |
 | 400 | ข้อมูลไม่ถูกต้อง | field ขาด, type ผิด, หนังสือถูกยืมแล้ว |
-| 403 | ไม่มีสิทธิ์ | role ไม่ใช่ admin, memberId ไม่ตรง, member ไม่ active |
+| 403 | ไม่มีสิทธิ์ | role ไม่ใช่ admin, guest พยายามยืม/คืน, member ไม่ active |
 | 404 | ไม่พบข้อมูล | id ไม่มีในระบบ |
+| 409 | ข้อมูลซ้ำ | email ซ้ำ |
 | 500 | Server error | error ที่ไม่คาดคิด |
