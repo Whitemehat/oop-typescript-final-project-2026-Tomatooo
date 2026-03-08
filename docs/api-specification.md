@@ -1,6 +1,6 @@
 # API Specification — Library Management System
 
-**Base URL:** `http://localhost:3000`
+> Base URL: http://localhost:3000
 
 **Authorization:** ระบบใช้ HTTP Headers แทน JWT
 - `role` — ระบุสิทธิ์ (`admin` / `student` / `guest`)
@@ -11,10 +11,11 @@
 ```json
 {
   "success": true,
-  "message": "Request successfull",
+  "message": "Request successful",
   "data": { ... }
 }
 ```
+หรือ
 
 ```json
 {
@@ -26,16 +27,17 @@
 
 ---
 
-## Book Module — `/book`
+## 📚 Book Module — `/book`
 
-### GET /book
-ดึงหนังสือทั้งหมด ไม่ต้องมี header ใดๆ
+### 🔴 GET /book
+ดึงข้อมูลหนังสือทั้งหมด
 
-**Response 200**
+**Response :**
+* **200 (OK) :**  ดึงข้อมูลรายการหนังสือทั้งหมดสำเร็จ
 ```json
 {
   "success": true,
-  "message": "Request successfull",
+  "message": "Request successful",
   "data": [
     {
       "id": 1,
@@ -55,16 +57,17 @@
 
 ---
 
-### GET /book/:id
-ดึงหนังสือตาม ID ที่ระบุ ไม่ต้องมี header ใดๆ
+### 🔴 GET /book/:id
+ดึงหนังสือตาม ID ที่ระบุ
 
 **Path Parameter:** `id` — รหัสหนังสือ (number)
 
-**Response 200**
+**Response :**
+* **200 (OK) :** ดึงข้อมูลหนังสือสำเร็จ
 ```json
 {
   "success": true,
-  "message": "Request successfull",
+  "message": "Request successful",
   "data": {
     "id": 1,
     "name": "The Great Gatsby",
@@ -80,27 +83,25 @@
 }
 ```
 
-**Response 404** — ไม่พบหนังสือ
+* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID
 ```json
 { "success": false, "message": "Book not found", "data": null }
 ```
 
 ---
 
-### POST /book
-เพิ่มหนังสือใหม่ เฉพาะ admin เท่านั้น
+### 🔴 POST /book
+เพิ่มหนังสือใหม่เข้าสู่ระบบ
 
-**Headers:**
-```
-role: admin
-```
+**Access control :** `Admin`
+**Headers :** `role: admin`
 
 **Request Body:**
 ```json
 {
   "name": "string",
   "author": "string",
-  "category": "fiction | non-fiction | horror | sci-fi | history | fantasy | adventure | comedy",
+  "category": "BookCategory",
   "language": "string",
   "uploadDate": "YYYY-MM-DD",
   "isRent": false,
@@ -114,7 +115,7 @@ role: admin
 |-------|------|----------|----------|
 | name | string | ✅ | ชื่อหนังสือ |
 | author | string | ✅ | ชื่อผู้แต่ง |
-| category | BookCategory | ✅ | หมวดหมู่ (ต้องเป็นค่าใน enum เท่านั้น) |
+| category | enum (BookCategory) | ✅ | หมวดหมู่ |
 | language | string | ✅ | ภาษาของหนังสือ |
 | uploadDate | string | ✅ | วันที่เพิ่มเข้าระบบ |
 | isRent | boolean | ✅ | สถานะการถูกยืม |
@@ -122,38 +123,43 @@ role: admin
 | review | string[] | ✅ | รายการ review |
 | isEarlyAccess | boolean | ✅ | หนังสือ early access หรือไม่ |
 
-**Response 201**
+> **Category Support (BookCategory) :** `Fiction`,` Non-fiction`, `Horror`,` Sci-fi`, `History, Fantasy`,` Adventure, Comedy`
+
+**Response :**
+* **201 (created) :** เพิ่มหนังสือเข้าสู่ระบบสำเร็จ
 ```json
 {
   "success": true,
-  "message": "Request successfull",
+  "message": "Request successful",
   "data": { "id": 2, "name": "...", ... }
 }
 ```
 
-**Response 400** — Validation error (field ขาด หรือ type ผิด)
+* **400 (Bad Request)**  
+> **Cause:** ข้อมูลไม่ครบถ้วน (Missing required fields) หรือประเภทข้อมูลไม่ถูกต้อง (Invalid data types)
 ```json
 { "success": false, "message": "...", "data": null }
 ```
 
-**Response 403** — ไม่ใช่ admin
+* **403 (Forbidden)**
+> **Cause :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
 ```json
 { "success": false, "message": "Permission denied", "data": null }
 ```
 
 ---
 
-### PATCH /book/:id
-แก้ข้อมูลหนังสือบางส่วน ส่งมาเฉพาะ field ที่ต้องการเปลี่ยน field อื่นคงเดิม
+### 🔴 PATCH /book/:id
+แก้ข้อมูลหนังสือบางส่วน
 
-**Headers:**
-```
-role: admin
-```
+**Access control :** `Admin`
+**Headers :** `role: admin`
 
 **Path Parameter:** `id` — รหัสหนังสือ
 
-**Request Body:** field ใดก็ได้จาก CreateBookDto (optional ทั้งหมด)
+**Request Body:** 
+> Optional: สามารถส่งเฉพาะ Field ที่ต้องการอัปเดตได้
+
 ```json
 {
   "star": 5,
@@ -161,42 +167,78 @@ role: admin
 }
 ```
 
-**Response 200** — คืน book ที่อัปเดตแล้ว
-**Response 400** — Validation error
-**Response 403** — ไม่ใช่ admin
-**Response 404** — ไม่พบหนังสือ
+**Response :**
+
+* **200 (OK) :** อัปเดตข้อมูลสำเร็จ และคืนข้อมูลหนังสือที่แก้ไขแล้ว
+* **400 (Bad Request) :** ข้อมูลที่ส่งมาไม่ถูกต้อง
+* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
+* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID (Book not found)
 
 ---
 
-### PUT /book/:id
-แทนข้อมูลหนังสือทั้งหมด (ต้องส่งทุก field) id ยังคงเดิม
+### 🔴 PUT /book/:id
+แก้ไขและแทนที่ข้อมูลหนังสือแบบยกชุด (Full Update) โดยอ้างอิงจาก ID ที่ระบุ
 
-**Headers:**
-```
-role: admin
-```
 
-**Request Body:** เหมือน POST /book (ทุก field required)
+**Access control :** `Admin`
+**Headers :** `role: admin`
 
-**Response 200** — คืน book ที่แทนแล้ว
-**Response 400** | **403** | **404**
 
----
+**Path Parameter:**  `id` — รหัสหนังสือ
 
-### DELETE /book/:id
-ลบหนังสือออกจากระบบ
+**Request Body:** เหมือน POST /book 
 
-**Headers:**
-```
-role: admin
-```
-
-**Response 200**
 ```json
-{ "success": true, "message": "Request successfull", "data": null }
+{
+
+"name": "string",
+
+"author": "string",
+
+"category": "BookCategory",
+
+"language": "string",
+
+"uploadDate": "YYYY-MM-DD",
+
+"isRent": false,
+
+"star": 0,
+
+"review": ["string"],
+
+"isEarlyAccess": false
+
+}
+```
+>ฟิลด์ `category` ให้ระบุค่าตาม enum **BookCategory** เท่านั้น (ได้แก่: `Fiction`, `Non-fiction`, `Horror`, `Sci-fi`, `History`, `Fantasy`, `Adventure`, `Comedy`)
+
+**Response :**
+
+* **200 (OK) :** อัปเดตข้อมูลสำเร็จ และคืนข้อมูลหนังสือที่แก้ไขแล้ว
+* **400 (Bad Request) :** ข้อมูลที่ส่งมาไม่ถูกต้อง หรือ Field ไม่ครบตามที่กำหนด
+* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
+* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID 
+
+---
+
+### 🔴 DELETE /book/:id
+ลบข้อมูลหนังสือออกจากระบบอย่างถาวร โดยระบุผ่าน ID ที่ต้องการลบ
+
+**Access control :** `Admin`
+**Headers :** `role: admin`
+
+**Path Parameter:**  `id` — รหัสหนังสือ
+
+
+**Response :**
+* **200 (OK) :** ลบข้อมูลสำเร็จ
+```json
+{ "success": true, "message": "Request successful", "data": null }
 ```
 
-**Response 403** | **404**
+* **403 (Forbidden) :** สิทธิ์การเข้าถึงไม่เพียงพอ (Access denied: Admin role required)
+* **404 (Not Found) :** ไม่พบหนังสือที่ระบุจาก ID 
 
 ---
 
@@ -237,7 +279,7 @@ role: admin
 ```json
 {
   "success": true,
-  "message": "Request successfull",
+  "message": "Request successful",
   "data": {
     "id": 1,
     "firstName": "สมชาย",

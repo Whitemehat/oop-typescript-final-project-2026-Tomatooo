@@ -1,32 +1,14 @@
 [
   {
-    "name": "Fairy tail",
-    "author": "Michael Bay",
-    "category": "sci-fi",
-    "language": "Eng",
-    "uploadDate": "2026-02-12",
+    "name": "Clean Code",
+    "author": "Robert C. Martin",
+    "category": "Education",
+    "language": "English",
+    "uploadDate": "2024-01-15",
     "isRent": false,
     "star": 5,
-    "review": [
-      "good one",
-      "not bad not good"
-    ],
-    "isEarlyAccess": true,
-    "id": 1
-  },
-  {
-    "name": "Fairy tail",
-    "author": "Michael Bay",
-    "category": "sci-fi",
-    "language": "Eng",
-    "uploadDate": "2026-02-12",
-    "isRent": false,
-    "star": 4,
-    "review": [
-      "good one",
-      "maybe good for fantasy"
-    ],
+    "review": [],
     "isEarlyAccess": false,
-    "id": 2
+    "id": 1
   }
 ]
