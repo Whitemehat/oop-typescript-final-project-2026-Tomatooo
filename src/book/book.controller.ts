@@ -31,14 +31,14 @@ export class BookController {
   @Get(':id')
   @HttpCode(200)
   findOne(@Param('id') id: number) {
-    return this.bookService.findOne(+id);
+    return this.bookService.findOne(id);
   }
 
   // แก้ข้อมูลบางส่วน ต้องเป็น admin
   @Patch(':id')
   @HttpCode(200)
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateBookDto: UpdateBookDto,
     @Headers('role') role: string,
   ) {
