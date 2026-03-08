@@ -224,7 +224,7 @@ describe('AppController (e2e)', () => {
         .post(`/member/${tempMemberId}/borrow/${tempBookId}`)
         .set('role', 'student')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
-        .expect(HttpStatus.OK); 
+        .expect(HttpStatus.CREATED); 
 
       // 4. Verify borrowedBooks contains the ID
       expect(borrowRes.body.data.borrowedBooks).toContain(tempBookId);
@@ -236,7 +236,7 @@ describe('AppController (e2e)', () => {
         .post(`/member/${tempMemberId}/return/${tempBookId}`)
         .set('role', 'student')
         .set('memberId', tempMemberId.toString()) // Added to satisfy requesterId check
-        .expect(HttpStatus.OK);
+        .expect(HttpStatus.CREATED);
 
       // 2. Verify borrowedBooks is now empty
       expect(returnRes.body.data.borrowedBooks).not.toContain(tempBookId);
