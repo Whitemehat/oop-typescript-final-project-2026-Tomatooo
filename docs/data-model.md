@@ -106,7 +106,7 @@ interface Member {
 | `lastName` | `string` | นามสกุล | |
 | `email` | `string` | อีเมล | |
 | `phone` | `string` | เบอร์โทร | |
-| `role` | `MemberRole` | ประเภทสมาชิก | **System-managed** — set เป็น `student` อัตโนมัติตอนสมัคร |
+| `role` | `MemberRole` | ประเภทสมาชิก | **System-managed** — set เป็น `member` อัตโนมัติตอนสมัคร |
 | `address` | `string` | ที่อยู่ | |
 | `dateOfBirth` | `string` | วันเกิด | รูปแบบ `YYYY-MM-DD` |
 | `memberSince` | `string` | วันที่สมัครสมาชิก | **System-managed** — auto-set เป็นวันปัจจุบัน ตอนสมัคร |
@@ -120,13 +120,16 @@ interface Member {
 
 ```typescript
 enum MemberRole {
-    STUDENT = 'student'
+    MEMBER  = 'member'
     ADMIN   = 'admin'
     GUEST   = 'guest'
 }
 ```
 
-> role สามารถเปลี่ยนได้ผ่าน PATCH `/member/:id` โดย admin เท่านั้น
+> role สามารถเปลี่ยนได้ผ่าน PATCH `/member/:query` โดย admin เท่านั้น
+> - `member` — สมาชิกทั่วไป ยืม/คืนหนังสือได้
+> - `admin` — ผู้ดูแลระบบ สิทธิ์เต็ม
+> - `guest` — ดูข้อมูลหนังสือได้ ไม่สามารถยืม/คืน
 
 ### ตัวอย่างข้อมูล
 
@@ -137,7 +140,7 @@ enum MemberRole {
   "lastName": "ใจดี",
   "email": "somchai@example.com",
   "phone": "0812345678",
-  "role": "student",
+  "role": "member",
   "address": "123 ถ.สุขุมวิท กทม.",
   "dateOfBirth": "2000-05-20",
   "memberSince": "2026-02-26",

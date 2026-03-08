@@ -11,11 +11,20 @@ export class ResponseInterceptor<T>
             next: CallHandler,
         ): Observable<ApiResponse<T>> {
             return next.handle().pipe(
-                map((data) => ({
-                    success: true,
-                    message: 'Request successfull',
-                    data: data ?? null,
-                }))
+                map((data) => {
+                    if (data && typeof data === 'object' && typeof (data as any).responseMessage === 'string') {
+                        return {
+                            success: true,
+                            message: (data as any).responseMessage as string,
+                            data: (data as any).data ?? null,
+                        };
+                    }
+                    return {
+                        success: true,
+                        message: 'Request successfull',
+                        data: data ?? null,
+                    };
+                })
             );
         }
     }

@@ -1,14 +1,59 @@
 [
   {
+    "id": 1,
     "name": "Clean Code",
     "author": "Robert C. Martin",
-    "category": "Education",
+    "category": "non-fiction",
     "language": "English",
     "uploadDate": "2024-01-15",
     "isRent": false,
     "star": 5,
     "review": [],
-    "isEarlyAccess": false,
-    "id": 1
+    "isEarlyAccess": false
+  },
+  {
+    "id": 2,
+    "name": "Dune",
+    "author": "Frank Herbert",
+    "category": "sci-fi",
+    "language": "English",
+    "uploadDate": "2024-01-15",
+    "isRent": false,
+    "star": 4,
+    "review": [
+      "Great read!",
+      "Highly recommended"
+    ],
+    "isEarlyAccess": false
+  },
+  {
+    "id": 3,
+    "name": "Dune",
+    "author": "Frank Herbert",
+    "category": "sci-fi",
+    "language": "English",
+    "uploadDate": "2024-01-15",
+    "isRent": false,
+    "star": 4,
+    "review": [
+      "Great read!",
+      "Highly recommended"
+    ],
+    "isEarlyAccess": false
+  },
+  {
+    "id": 4,
+    "name": "Dune",
+    "author": "Frank Herbert",
+    "category": "sci-fi",
+    "language": "English",
+    "uploadDate": "2024-01-15",
+    "isRent": false,
+    "star": 5,
+    "review": [
+      "Great read!",
+      "Highly recommended"
+    ],
+    "isEarlyAccess": false
   }
 ]
