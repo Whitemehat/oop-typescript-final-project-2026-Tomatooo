@@ -154,3 +154,26 @@ classDiagram
 
 ---
 
+## 3. Module Dependency Diagram
+
+แสดงความสัมพันธ์ระหว่าง NestJS Modules
+
+```mermaid
+graph TD
+    AppModule["AppModule\n(Root)"]
+    BookModule["BookModule\nexports: BookService"]
+    MemberModule["MemberModule\nimports: BookModule"]
+
+    AppModule --> BookModule
+    AppModule --> MemberModule
+    MemberModule --> BookModule
+
+    BookModule --> BookController["BookController"]
+    BookModule --> BookService["BookService"]
+    MemberModule --> MemberController["MemberController"]
+    MemberModule --> MemberService["MemberService"]
+
+    MemberService -. "inject" .-> BookService
+```
+
+---
