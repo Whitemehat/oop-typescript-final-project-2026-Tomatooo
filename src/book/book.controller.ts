@@ -38,7 +38,7 @@ export class BookController {
   @Patch(':id')
   @HttpCode(200)
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateBookDto: UpdateBookDto,
     @Headers('role') role: string,
   ) {
@@ -66,3 +66,4 @@ export class BookController {
     return this.bookService.remove(+id, role);
   }
 }
+
