@@ -59,6 +59,7 @@ export class MemberService {
     return this.readFile();
   }
 
+  // ไมไ่ด้ใช้
   findOne(id: number, role: string, memberId: string): Member {
     const members = this.readFile();
     const index = this.findMemberIndex(id, members);
