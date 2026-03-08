@@ -31,7 +31,7 @@ export class BookController {
   @Get(':id')
   @HttpCode(200)
   findOne(@Param('id') id: number) {
-    return this.bookService.findOne(id);
+    return this.bookService.findOne(+id);
   }
 
   // แก้ข้อมูลบางส่วน ต้องเป็น admin
@@ -66,3 +66,4 @@ export class BookController {
     return this.bookService.remove(+id, role);
   }
 }
+
