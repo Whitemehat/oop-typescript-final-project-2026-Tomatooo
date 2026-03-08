@@ -81,6 +81,36 @@ describe('AppController (e2e)', () => {
         });
     });
 
+    it('PUT /book/:id (Update)', () => {
+      return request(app.getHttpServer())
+        .put(`/book/${createdBookId}`)
+        .set('role', 'admin')
+        .send({ 
+          name: 'TestPut',
+          author: 'Eistein',
+          category: 'Test',
+          language: 'English',
+          uploadDate: '2024-01-15',
+          isRent: false,
+          star: 5,
+          review: ["good for tester"],
+          isEarlyAccess: true
+        })
+        .expect(HttpStatus.OK)
+        .expect((res) => {
+          expect(res.body.data.name).toBe('TestPut');
+          expect(res.body.data.author).toBe('Eistein');
+          expect(res.body.data.category).toBe('Test');
+          expect(res.body.data.language).toBe('English');
+          expect(res.body.data.uploadDate).toBe('2024-01-15');
+          expect(res.body.data.isRent).toBe(false);
+          expect(res.body.data.star).toBe(5);
+          expect(res.body.data.review).toEqual(["good for tester"]);
+          expect(res.body.data.isEarlyAccess).toBe(true);
+
+        });
+    });
+
     it('DELETE /book/:id (Delete)', () => {
       return request(app.getHttpServer())
         .delete(`/book/${createdBookId}`)
