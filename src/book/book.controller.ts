@@ -13,7 +13,7 @@ export class BookController {
   // เพิ่มหนังสือใหม่ ต้องเป็น admin ถึงทำได้
   @Post()
   @HttpCode(201)
-  @ApiOperation({ summary: 'เพิ่มหนังสือใหม่ (เฉพาะ admin)', description: 'Header: role=admin \nBody: name, author, category, language, uploadDate, isRent, star, review[], isEarlyAccess' })
+  @ApiOperation({ description: 'Header: role=admin \nBody: name, author, category, language, uploadDate, isRent, star, review[], isEarlyAccess' })
   @ApiHeader({ name: 'role', description: 'admin', required: true })
   create(
     @Body() createBookDto: CreateBookDto,
@@ -25,7 +25,7 @@ export class BookController {
   // ดึงหนังสือทั้งหมดออกมา ใครก็ดูได้
   @Get()
   @HttpCode(200)
-  @ApiOperation({ summary: 'ดูรายชื่อหนังสือทั้งหมด (ใครก็ดูได้)', description: 'ไม่ต้องใส่ header ใดๆ' })
+  @ApiOperation({ description: 'ไม่ต้องใส่ header ใดๆ' })
   findAll() {
     return this.bookService.findAll();
   }
@@ -33,7 +33,7 @@ export class BookController {
   // ค้นหาหนังสือด้วยชื่อหรือ id — ใครก็ค้นได้
   @Get('search')
   @HttpCode(200)
-  @ApiOperation({ summary: 'ค้นหาหนังสือด้วยชื่อหรือ ID (ใครก็ค้นได้)', description: 'Query param: query = ชื่อหนังสือ (partial match) หรือ ID เป็นตัวเลข \nถ้าไม่เจอจะได้รับ message: No data found' })
+  @ApiOperation({ description: 'Query param: query = ชื่อหนังสือ (partial match) หรือ ID เป็นตัวเลข \nถ้าไม่เจอจะได้รับ message: No data found' })
   @ApiQuery({ name: 'query', description: 'ชื่อหนังสือ (partial) หรือ ID เช่น "Clean" หรือ "3"' })
   search(@Query('query') query: string) {
     return this.bookService.search(query ?? '');
@@ -42,7 +42,7 @@ export class BookController {
   // แก้ข้อมูลบางส่วน ต้องเป็น admin — รับ id หรือชื่อหนังสือก็ได้
   @Patch(':query')
   @HttpCode(200)
-  @ApiOperation({ summary: 'แก้หนังสือบางส่วน (เฉพาะ admin)', description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) เช่น "3" หรือ "Dune" \nHeader: role=admin \nBody: เฉพาะ field ที่ต้องการแก้ เช่น { star: 5 }' })
+  @ApiOperation({ description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) เช่น "3" หรือ "Dune" \nHeader: role=admin \nBody: เฉพาะ field ที่ต้องการแก้ เช่น { star: 5 }' })
   @ApiHeader({ name: 'role', description: 'admin', required: true })
   update(
     @Param('query') query: string,
@@ -55,7 +55,7 @@ export class BookController {
   // แทนข้อมูลทั้งหมด ต้องเป็น admin — รับ id หรือชื่อหนังสือก็ได้
   @Put(':query')
   @HttpCode(200)
-  @ApiOperation({ summary: 'แทนแบบหนังสือทั้งเล่ม (เฉพาะ admin)', description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) \nHeader: role=admin \nBody: name, author, category, language, uploadDate, isRent, star, review[], isEarlyAccess (ครบทุก field)' })
+  @ApiOperation({ description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) \nHeader: role=admin \nBody: name, author, category, language, uploadDate, isRent, star, review[], isEarlyAccess (ครบทุก field)' })
   @ApiHeader({ name: 'role', description: 'admin', required: true })
   replace(
     @Param('query') query: string,
@@ -68,7 +68,7 @@ export class BookController {
   // ลบหนังสือ ต้องเป็น admin — รับ id หรือชื่อหนังสือก็ได้
   @Delete(':query')
   @HttpCode(200)
-  @ApiOperation({ summary: 'ลบหนังสือ (เฉพาะ admin)', description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) เช่น "3" หรือ "Dune" \nHeader: role=admin \nID จะถูก resequence หลังลบ' })
+  @ApiOperation({ description: 'Path param: :query = ID หรือชื่อหนังสือ (exact match) เช่น "3" หรือ "Dune" \nHeader: role=admin \nID จะถูก resequence หลังลบ' })
   @ApiHeader({ name: 'role', description: 'admin', required: true })
   remove(
     @Param('query') query: string,

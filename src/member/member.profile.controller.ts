@@ -14,7 +14,6 @@ export class MemberProfileController {
   @Patch(':id/profile')
   @HttpCode(200)
   @ApiOperation({
-    summary: 'แก้ไขข้อมูลส่วนตัวสมาชิก (member หรือ admin)',
     description: 'Path param: :id = ID สมาชิกที่ต้องการแก้ไข\nHeader: role=member หรือ role=admin\nBody (optional fields): firstName, lastName, email, phone, address, dateOfBirth\nหมายเหตุ: ไม่สามารถแก้ไข role, isActive, maxBorrowLimit, borrowedBooks ผ่าน endpoint นี้ได้',
   })
   @ApiHeader({ name: 'role', description: 'member หรือ admin', required: true })
